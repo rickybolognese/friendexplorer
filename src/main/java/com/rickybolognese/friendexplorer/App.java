@@ -17,20 +17,39 @@ public class App {
         CommandLineParser commandLineParser = new DefaultParser();
         Options options = new Options();
 
-        Option venmoAccessToken = Option.builder("vat")
-                                        .hasArg(true)
-                                        .longOpt("venmo-access-token")
-                                        .required(true)
-                                        .type(String.class)
-                                        .build();
+        Option maxDepth =
+            Option.builder("md")
+                  .hasArg(true)
+                  .longOpt("max-depth")
+                  .required(false)
+                  .type(Integer.class)
+                  .build();
 
+        Option venmoAccessToken =
+            Option.builder("vat")
+                  .hasArg(true)
+                  .longOpt("venmo-access-token")
+                  .required(true)
+                  .type(String.class)
+                  .build();
+
+        Option venmoUserId =
+            Option.builder("vui")
+                  .hasArg(true)
+                  .longOpt("venmo-user-id")
+                  .required(true)
+                  .type(String.class)
+                  .build();
+
+        options.addOption(maxDepth);
         options.addOption(venmoAccessToken);
+        options.addOption(venmoUserId);
 
-        CommandLine commandLine = null;
         try {
-            commandLine = commandLineParser.parse(options, args);
+            CommandLine commandLine = commandLineParser.parse(options, args);
         } catch (ParseException e) {
             LOGGER.error("Failed to parse command line options", e);
+            return;
         }
     }
 }

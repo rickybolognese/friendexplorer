@@ -1,13 +1,15 @@
 package com.rickybolognese.friendexplorer.venmo;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Iterator;
 
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
 
 class VenmoClient implements IVenmoApi {
     private final String accessToken;
@@ -22,7 +24,7 @@ class VenmoClient implements IVenmoApi {
         this.httpClient = httpClient;
     }
     
-    private HttpRequest buildGetRequest(String path) {
+    private HttpUriRequest buildGetRequest(String path) {
         return new HttpGet(buildUri(path));
     }
 
@@ -35,11 +37,19 @@ class VenmoClient implements IVenmoApi {
     }
 
     public VenmoUser getUser(String userId) throws VenmoUserNotFoundException {
-        HttpRequest request = buildGetRequest("/users/" + userId);
-        return new VenmoUser();
+        final HttpUriRequest request = buildGetRequest("/users/" + userId);
+
+        try {
+            final HttpResponse response = httpClient.execute(request);
+            return new VenmoUser();
+        } catch (final ClientProtocolException e) {
+            throw new VenmoClientException(e);
+        } catch (final IOException e) {
+            throw new VenmoClientException(e);
+        }
     }
 
-    public Iterator<VenmoUser> getUserFriends(String userId) {
+    public Iterator<VenmoUser> getUserFriends(String userId) throws VenmoUserNotFoundException {
         throw new UnsupportedOperationException();
     }
 }

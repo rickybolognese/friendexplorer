@@ -5,7 +5,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Iterator;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -32,24 +35,31 @@ class VenmoClient implements IVenmoApi {
         try {
             return new URI(apiUrl + path + "?access_token=" + accessToken);
         } catch (URISyntaxException e) {
-            throw new VenmoClientException(e);
+            throw new ClientException(e);
         }
     }
 
-    public VenmoUser getUser(String userId) throws VenmoUserNotFoundException {
+    public VenmoUser getUser(String userId) throws ClientException, UserNotFoundException {
         final HttpUriRequest request = buildGetRequest("/users/" + userId);
 
         try {
             final HttpResponse response = httpClient.execute(request);
+            final StatusLine statusLine = response.getStatusLine();
+
+            if (HttpStatus.SC_BAD_REQUEST == statusLine.getStatusCode()) {
+                throw new ClientException(statusLine.getReasonPhrase());
+            }
+
+            final HttpEntity entity = response.getEntity();
             return new VenmoUser();
         } catch (final ClientProtocolException e) {
-            throw new VenmoClientException(e);
+            throw new ClientException(e);
         } catch (final IOException e) {
-            throw new VenmoClientException(e);
+            throw new ClientException(e);
         }
     }
 
-    public Iterator<VenmoUser> getUserFriends(String userId) throws VenmoUserNotFoundException {
+    public Iterator<VenmoUser> getUserFriends(String userId) throws UserNotFoundException {
         throw new UnsupportedOperationException();
     }
 }

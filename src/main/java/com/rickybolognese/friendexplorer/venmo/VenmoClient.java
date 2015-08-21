@@ -1,6 +1,8 @@
 package com.rickybolognese.friendexplorer.venmo;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Iterator;
@@ -44,13 +46,25 @@ class VenmoClient implements IVenmoApi {
 
         try {
             final HttpResponse response = httpClient.execute(request);
+            final HttpEntity entity = response.getEntity();
+            final InputStream content = entity.getContent();
             final StatusLine statusLine = response.getStatusLine();
 
             if (HttpStatus.SC_BAD_REQUEST == statusLine.getStatusCode()) {
                 throw new ClientException(statusLine.getReasonPhrase());
             }
 
-            final HttpEntity entity = response.getEntity();
+            try (final ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {
+                final byte[] bytes = new byte[16384];
+                int nRead = 0;
+
+                while (-1 != (nRead = content.read(bytes, 0, bytes.length))) {
+                    buffer.write(bytes, 0, nRead);
+                }
+
+                buffer.flush();
+            }
+
             return new VenmoUser();
         } catch (final ClientProtocolException e) {
             throw new ClientException(e);

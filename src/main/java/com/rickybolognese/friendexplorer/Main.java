@@ -1,5 +1,8 @@
 package com.rickybolognese.friendexplorer;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -10,10 +13,14 @@ import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class App {
-    private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
+public class Main {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
-    public static void main( String[] args ) {
+    public static void main(final String[] args) {
+        final Injector injector = Guice.createInjector(new Module());
+        final Application application = injector.getInstance(Application.class);
+        application.run(args);
+
         CommandLineParser commandLineParser = new DefaultParser();
         Options options = new Options();
 

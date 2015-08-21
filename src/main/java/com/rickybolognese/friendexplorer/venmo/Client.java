@@ -16,12 +16,17 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 
-class VenmoClient implements IVenmoApi {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+class Client implements IClient {
+    private static Logger LOGGER = LoggerFactory.getLogger(Client.class);
+
     private final String accessToken;
     private final String apiUrl;
     private final HttpClient httpClient;
 
-    public VenmoClient(final String accessToken,
+    public Client(final String accessToken,
             final String apiUrl,
             final HttpClient httpClient) {
         this.accessToken = accessToken;
@@ -41,13 +46,13 @@ class VenmoClient implements IVenmoApi {
         }
     }
 
-    public VenmoUser getUser(String userId) throws ClientException, UserNotFoundException {
+    public IUser getUser(String userId) throws ClientException, UserNotFoundException {
         final HttpUriRequest request = buildGetRequest("/users/" + userId);
 
         try {
             final HttpResponse response = httpClient.execute(request);
             final HttpEntity entity = response.getEntity();
-            final InputStream content = entity.getContent();
+            final InputStream inputStream = entity.getContent();
             final StatusLine statusLine = response.getStatusLine();
 
             if (HttpStatus.SC_BAD_REQUEST == statusLine.getStatusCode()) {
@@ -58,14 +63,18 @@ class VenmoClient implements IVenmoApi {
                 final byte[] bytes = new byte[16384];
                 int nRead = 0;
 
-                while (-1 != (nRead = content.read(bytes, 0, bytes.length))) {
+                while (-1 != (nRead = inputStream.read(bytes, 0, bytes.length))) {
                     buffer.write(bytes, 0, nRead);
                 }
 
                 buffer.flush();
+
+                final String content = buffer.toString("utf-8");
+
+                LOGGER.debug("String result", content);
             }
 
-            return new VenmoUser();
+            return new User();
         } catch (final ClientProtocolException e) {
             throw new ClientException(e);
         } catch (final IOException e) {
@@ -73,7 +82,7 @@ class VenmoClient implements IVenmoApi {
         }
     }
 
-    public Iterator<VenmoUser> getUserFriends(String userId) throws UserNotFoundException {
+    public Iterator<IUser> getUserFriends(String userId) throws UserNotFoundException {
         throw new UnsupportedOperationException();
     }
 }

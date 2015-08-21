@@ -1,4 +1,5 @@
 package com.rickybolognese.friendexplorer.venmo;
 
-class VenmoUser {
+interface IUser {
+    void noop();
 }

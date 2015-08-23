@@ -19,7 +19,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class Client implements IClient {
+public class Client implements IClient {
     private static Logger LOGGER = LoggerFactory.getLogger(Client.class);
 
     private final String accessToken;
@@ -71,7 +71,8 @@ class Client implements IClient {
 
                 final String content = buffer.toString("utf-8");
 
-                LOGGER.debug("String result", content);
+                LOGGER.debug("Number read" + nRead);
+                LOGGER.debug("String result" + content);
             }
 
             return new User();

@@ -1,5 +1,5 @@
 package com.rickybolognese.friendexplorer.venmo;
 
-interface IUser {
+public interface IUser {
     void noop();
 }

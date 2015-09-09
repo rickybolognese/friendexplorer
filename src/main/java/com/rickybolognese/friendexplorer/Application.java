@@ -1,8 +1,16 @@
 package com.rickybolognese.friendexplorer;
 
+import javax.inject.Inject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 class Application {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
+
     private final ArgumentsParser argumentsParser;
 
+    @Inject
     Application (ArgumentsParser argumentsParser) {
         this.argumentsParser = argumentsParser;
     }
@@ -11,6 +19,7 @@ class Application {
         try {
             final Arguments arguments = argumentsParser.parse(args);
         } catch(ArgumentsParseException e) {
+            LOGGER.error("Failed to parse arguments", e);
         }
     }
 }

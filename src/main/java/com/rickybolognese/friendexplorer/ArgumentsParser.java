@@ -22,16 +22,16 @@ class ArgumentsParser {
             .type(Integer.class)
             .build());
 
-        options.addOption(Option.builder("vat")
+        options.addOption(Option.builder(Arguments.VENMO_ACCESS_TOKEN)
             .hasArg(true)
-            .longOpt("venmo-access-token")
+            .longOpt(Arguments.VENMO_ACCESS_TOKEN_LONG)
             .required(true)
             .type(String.class)
             .build());
 
-        options.addOption(Option.builder("vui")
+        options.addOption(Option.builder(Arguments.VENMO_USER_ID)
             .hasArg(true)
-            .longOpt("venmo-user-id")
+            .longOpt(Arguments.VENMO_USER_ID_LONG)
             .required(true)
             .type(String.class)
             .build());

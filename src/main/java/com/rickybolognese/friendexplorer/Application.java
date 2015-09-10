@@ -18,6 +18,11 @@ class Application {
     void run(final String[] args) {
         try {
             final Arguments arguments = argumentsParser.parse(args);
+            final String venmoAccessToken = arguments.getVenmoAccessToken();
+            final String venmoUserId = arguments.getVenmoUserId();
+
+            LOGGER.info("Venmo Access Token = {}", venmoAccessToken);
+            LOGGER.info("Venmo User Id = {}", venmoUserId);
         } catch(ArgumentsParseException e) {
             LOGGER.error("Failed to parse arguments", e);
         }

@@ -6,14 +6,14 @@ import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
 
 class Module extends AbstractModule {
-    private final Properties properties;
+    private final Configuration configuration;
 
-    Module(Properties properties) {
-        this.properties = properties;
+    Module(Configuration configuration) {
+        this.configuration = configuration;
     }
 
     @Override
     public void configure() {
-        Names.bindProperties(binder(), this.properties);
+        Names.bindProperties(binder(), this.configuration);
     }
 }

@@ -1,5 +1,6 @@
 package com.rickybolognese.friendexplorer;
 
+import java.lang.annotation.Annotation;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -10,7 +11,7 @@ class Application {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
     @Inject
-    Application (@Named(Settings.VENMO_USER_ID) String venmoUserId) {
+    Application (@Named(Configuration.VENMO_USER_ID) String venmoUserId) {
     }
 
     void run() {
